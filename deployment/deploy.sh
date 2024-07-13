@@ -1,6 +1,8 @@
 PROJECT_DIR="/var/www/html/blog"
 cd $PROJECT_DIR
 git pull
+
+cd api
 composer install --no-interaction --optimize-autoloader --no-dev
 sudo chown -R www-data:www-data $PROJECT_DIR
 
