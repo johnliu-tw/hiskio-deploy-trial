@@ -24,4 +24,4 @@ sudo systemctl reload nginx
 
 sudo cp $PROJECT_DIR"/deployment/supervisord.conf" /etc/supervisor/conf.d/supervisord.conf
 sudo supervisorctl update
-sudo supervisorctl restart workers
+sudo supervisorctl restart workers:

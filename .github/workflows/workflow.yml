@@ -19,7 +19,7 @@ jobs:
         options: --health-cmd="mysqladmin ping"
 
     steps:
-      - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+      - uses: shivammathur/setup-php@c541c155eee45413f5b09a52248675b1a2575231
         with:
           php-version: '8.3'
       - uses: actions/checkout@v3
