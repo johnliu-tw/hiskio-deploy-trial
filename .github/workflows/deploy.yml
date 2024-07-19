@@ -8,6 +8,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Copy SSH key
         run: |
           echo "${{ secrets.SSH_KEY }}" >> ./id_rsa
