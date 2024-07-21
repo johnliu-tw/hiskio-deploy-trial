@@ -1,13 +1,12 @@
 name: Tests
 
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+# on:
+#   pull_request:
+#     types: [opened, synchronize, reopened]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
     services:
       mysql:
         image: mysql:8.0.21

@@ -1,0 +1,70 @@
+name: Tests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+env:
+  API_IMAGE: johnliutw/blog-api:${{ github.sha }}
+  SCHEDULER_IMAGE: johnliutw/blog-scheduler:${{ github.sha }}
+  WORKER_IMAGE: johnliutw/blog-worker:${{ github.sha }}
+
+jobs:
+  build-backend-images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build images
+        run: |
+          docker build -t $API_IMAGE --target=api --build-arg user=john --build-arg uid=1000 -f ./api/Dockerfile .
+          docker build -t $SCHEDULER_IMAGE --target=scheduler --build-arg user=john --build-arg uid=1000 -f ./api/Dockerfile .
+          docker build -t $WORKER_IMAGE --target=worker --build-arg user=john --build-arg uid=1000 -f ./api/Dockerfile .
+      - name: Push images
+        run: |
+          docker push $API_IMAGE
+          docker push $SCHEDULER_IMAGE
+          docker push $WORKER_IMAGE
+
+  test:
+    needs: [ build-backend-images ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Pull API image
+        run: docker pull $API_IMAGE
+      - name: Run tests
+        run: |
+          docker-compose -f docker-compose.ci.yml up -d
+          docker-compose -f docker-compose.ci.yml exec -T api php artisan test
+
+    services:
+      mysql:
+        image: mysql:8.0.21
+        env:
+          MYSQL_DATABASE: blog-test
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping"
+
+
+  remove-images:
+    needs: [ test ]
+    runs-on: ubuntu-latest
+    if: ${{ always() && contains(needs.*.result, 'failure') }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remove images
+        run: |
+          ./deployment/docker/remove-image.sh johnliutw/blog-api ${{ github.sha }} ${{ secrets.DOCKERHUB_USERNAME }} ${{ secrets.DOCKERHUB_PASSWORD }}
+          ./deployment/docker/remove-image.sh johnliutw/blog-worker ${{ github.sha }} ${{ secrets.DOCKERHUB_USERNAME }} ${{ secrets.DOCKERHUB_PASSWORD }}
+          ./deployment/docker/remove-image.sh johnliutw/blog-scheduler ${{ github.sha }} ${{ secrets.DOCKERHUB_USERNAME }} ${{ secrets.DOCKERHUB_PASSWORD }}
+
