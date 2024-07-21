@@ -13,9 +13,9 @@ services:
       - DB_CONNECTION=mysql
       - DB_HOST=mysql
       - DB_PORT=3306
-      - DB_DATABASE=blog
+      - DB_DATABASE=blog-test
       - DB_USERNAME=root
-      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_PASSWORD=root
       - QUEUE_CONNECTION=sync
       - MAIL_MAILER=log
     depends_on:
@@ -33,6 +33,6 @@ services:
       - DB_CONNECTION=mysql
       - DB_HOST=mysql
       - DB_PORT=3306
-      - DB_DATABASE=blog
+      - DB_DATABASE=blog-test
       - DB_USERNAME=root
-      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_PASSWORD=root

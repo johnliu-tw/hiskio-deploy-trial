@@ -62,6 +62,10 @@ jobs:
     if: ${{ always() && contains(needs.*.result, 'failure') }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Set executable permissions
+        run: chmod +x ./deployment/docker/remove-image.sh
+
       - name: Remove images
         run: |
           ./deployment/docker/remove-image.sh johnliutw/blog-api ${{ github.sha }} ${{ secrets.DOCKERHUB_USERNAME }} ${{ secrets.DOCKERHUB_PASSWORD }}
