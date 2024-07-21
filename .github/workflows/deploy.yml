@@ -1,11 +1,11 @@
-name: Tests
+name: Deploy
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  test:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,7 +15,7 @@ jobs:
           chmod 600 id_rsa
       - name: Run deploy script
         run: |
-          scp -C -o StrictHostKeyChecking=no -i ./id_rsa ./deployment/deploy.sh john@${{ secrets.SERVER_IP }}:/home/john/deploy.sh
+          scp -C -o StrictHostKeyChecking=no -i ./id_rsa ./deployment/deploy-script/deploy.sh john@${{ secrets.SERVER_IP }}:/home/john/deploy.sh
           scp -C -o StrictHostKeyChecking=no -i ./id_rsa ./id_rsa john@${{ secrets.SERVER_IP }}:/home/john/.ssh/id_rsa
           ssh -tt -o StrictHostKeyChecking=no -i ./id_rsa john@${{ secrets.SERVER_IP }} "chown john:john /home/john/deploy.sh && chmod +x /home/john/deploy.sh"
           ssh -tt -o StrictHostKeyChecking=no -i ./id_rsa john@${{ secrets.SERVER_IP }} "/home/john/deploy.sh"
