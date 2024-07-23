@@ -19,8 +19,8 @@ services:
       - QUEUE_CONNECTION=sync
       - MAIL_MAILER=log
     depends_on:
-      migrate:
-        condition: service_started
+      - mysql
+      - migrate
 
   migrate:
     image: ${API_IMAGE}
