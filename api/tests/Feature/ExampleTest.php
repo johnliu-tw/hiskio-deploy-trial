@@ -14,6 +14,8 @@ class ExampleTest extends TestCase
     {
         $response = $this->get('/posts');
 
+        var_dump($response->getContent());
+
         $response->assertStatus(200);
     }
 }
