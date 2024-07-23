@@ -36,3 +36,16 @@ services:
       - DB_DATABASE=blog-test
       - DB_USERNAME=root
       - DB_PASSWORD=root
+
+  mysql:
+      image: mysql:8.0.21
+      environment:
+        MYSQL_DATABASE: blog-test
+        MYSQL_ROOT_PASSWORD: root
+      ports:
+        - "3306:3306"
+      healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "--silent"]
+        interval: 10s
+        timeout: 5s
+        retries: 3

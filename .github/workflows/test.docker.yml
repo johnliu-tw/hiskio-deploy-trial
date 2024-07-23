@@ -45,17 +45,6 @@ jobs:
           docker-compose -f docker-compose.ci.yml up -d
           docker-compose -f docker-compose.ci.yml exec -T api php artisan test
 
-    services:
-      mysql:
-        image: mysql:8.0.21
-        env:
-          MYSQL_DATABASE: blog-test
-          MYSQL_ROOT_PASSWORD: root
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping"
-
-
   remove-images:
     needs: [ test ]
     runs-on: ubuntu-latest
