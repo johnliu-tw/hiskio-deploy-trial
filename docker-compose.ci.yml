@@ -22,7 +22,7 @@ services:
       mysql:
         condition: service_healthy
       migrate:
-        condition: service_completed_successfully
+        condition: service_started
 
   migrate:
     image: ${API_IMAGE}
