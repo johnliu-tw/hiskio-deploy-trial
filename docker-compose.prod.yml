@@ -1,0 +1,54 @@
+version: "3.8"
+services:
+  api:
+    image: johnliutw/blog-api:${IMAGE_TAG}
+    command: sh -c "php-fpm"
+    restart: unless-stopped
+    volumes:
+      - ./.env:/usr/src/.env
+      - type: volume
+        source: storage
+        target: /usr/src/storage
+    depends_on:
+      - update
+
+  update:
+    image: johnliutw/blog-api:${IMAGE_TAG}
+    command: sh update.sh
+    restart: no
+    volumes:
+      - ./.env:/usr/src/.env
+
+  nginx:
+    image: johnliutw/blog-nginx:${IMAGE_TAG}
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+
+
+  scheduler:
+    image: johnliutw/blog-scheduler:${IMAGE_TAG}
+    restart: unless-stopped
+    volumes:
+      - ./.env:/usr/src/.env
+      - type: volume
+        source: storage
+        target: /usr/src/storage
+    depends_on:
+      - update
+
+  worker:
+    image: johnliutw/blog-worker:${IMAGE_TAG}
+    restart: unless-stopped
+    volumes:
+      - ./.env:/usr/src/.env
+      - type: volume
+        source: storage
+        target: /usr/src/storage
+    depends_on:
+      - update
+
+volumes:
+  storage:

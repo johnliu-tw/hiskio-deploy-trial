@@ -13,14 +13,14 @@ class PostSeeder extends Seeder
      */
     public function run(): void
     {
-        Post::create([
+        Post::updateOrCreate([
             'title' => 'First Post',
             'content' => 'Content of the first post',
             'is_published' => true,
             'published_at' => now(),
         ]);
 
-        Post::create([
+        Post::updateOrCreate([
             'title' => 'Second Post',
             'content' => 'Content of the second post',
             'is_published' => false,
