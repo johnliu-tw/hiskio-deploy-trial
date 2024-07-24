@@ -20,11 +20,11 @@ jobs:
       - name: Run deploy script
         run: |
           scp -C -o StrictHostKeyChecking=no -i ./id_rsa ./deployment/docker/deploy.sh john@${{ secrets.SERVER_IP }}:/home/john/deploy.sh
-          scp -C -o StrictHostKeyChecking=no -i ./id_rsa ./docker-compose.prod.yml ${{ secrets.SERVER_IP }}:/usr/src/docker-compose.prod.yml
+          scp -C -o StrictHostKeyChecking=no -i ./id_rsa ./docker-compose.prod.yml john@${{ secrets.SERVER_IP }}:/usr/src/docker-compose.prod.yml
           scp -C -o StrictHostKeyChecking=no -i ./id_rsa ./id_rsa john@${{ secrets.SERVER_IP }}:/home/john/.ssh/id_rsa
-          scp -C -o StrictHostKeyChecking=no -i ./id_rsa ./api/.env.docker.prod.template ${{ secrets.SERVER_IP }}:/usr/src/.env
+          scp -C -o StrictHostKeyChecking=no -i ./id_rsa ./api/.env.docker.prod.template john@${{ secrets.SERVER_IP }}:/usr/src/.env
           ssh -tt -o StrictHostKeyChecking=no -i ./id_rsa john@${{ secrets.SERVER_IP }} "chown john:john /home/john/deploy.sh && chmod +x /home/john/deploy.sh"
-          ssh -tt -o StrictHostKeyChecking=no -i ./id_rsa ${{ secrets.SERVER_IP }} "
+          ssh -tt -o StrictHostKeyChecking=no -i ./id_rsa john@${{ secrets.SERVER_IP }} "
             sed -i "/IMAGE_TAG/c\IMAGE_TAG=${{ github.event.inputs.IMAGE_TAG }}" /usr/src/.env
             sed -i "/DB_PASSWORD/c\DB_PASSWORD=${{ secrets.DB_PASSWORD }}" /usr/src/.env
             sed -i "/APP_KEY/c\APP_KEY=${{ secrets.APP_KEY }}" /usr/src/.env"
