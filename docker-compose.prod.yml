@@ -15,7 +15,7 @@ services:
   update:
     image: johnliutw/blog-api:${IMAGE_TAG}
     command: sh update.sh
-    restart: no
+    restart: none
     volumes:
       - ./.env:/usr/src/.env
 
