@@ -8,6 +8,7 @@ env:
   API_IMAGE: johnliutw/blog-api:${{ github.sha }}
   SCHEDULER_IMAGE: johnliutw/blog-scheduler:${{ github.sha }}
   WORKER_IMAGE: johnliutw/blog-worker:${{ github.sha }}
+  NGINX_IMAGE: johnliutw/blog-nginx:${{ github.sha }}
 
 jobs:
   build-backend-images:
@@ -28,6 +29,19 @@ jobs:
           docker push $API_IMAGE
           docker push $SCHEDULER_IMAGE
           docker push $WORKER_IMAGE
+
+  build-nginx:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build nginx image
+        run: |
+          docker build -t $NGINX_IMAGE -f ./Dockerfile.nginx .
+          docker push $NGINX_IMAGE
 
   test:
     needs: [ build-backend-images ]
@@ -60,4 +74,5 @@ jobs:
           ./deployment/docker/remove-image.sh johnliutw/blog-api ${{ github.sha }} ${{ secrets.DOCKERHUB_USERNAME }} ${{ secrets.DOCKERHUB_PASSWORD }}
           ./deployment/docker/remove-image.sh johnliutw/blog-worker ${{ github.sha }} ${{ secrets.DOCKERHUB_USERNAME }} ${{ secrets.DOCKERHUB_PASSWORD }}
           ./deployment/docker/remove-image.sh johnliutw/blog-scheduler ${{ github.sha }} ${{ secrets.DOCKERHUB_USERNAME }} ${{ secrets.DOCKERHUB_PASSWORD }}
+          ./deployment/docker/remove-image.sh johnliutw/blog-nginx ${{ github.sha }} ${{ secrets.DOCKERHUB_USERNAME }} ${{ secrets.DOCKERHUB_PASSWORD }}
 
