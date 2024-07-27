@@ -67,5 +67,28 @@ services:
     depends_on:
       - update
 
+  redis:
+    image: redis:7.0.11-alpine
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+        window: 15s
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    volumes:
+      - type: volume
+        source: redisdata
+        target: /data
+
 volumes:
   storage:
+  redisdata:
