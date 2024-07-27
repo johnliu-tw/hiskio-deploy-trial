@@ -21,6 +21,8 @@ services:
     image: johnliutw/blog-nginx:${IMAGE_TAG}
     ports:
       - "80:80"
+    volumes:
+      - ./.env:/usr/src/.env
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost/posts" ]
       interval: 30s
