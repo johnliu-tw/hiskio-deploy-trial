@@ -1,7 +1,7 @@
-name: Tests
+name: Tests-Docker
 
-# on:
-#   workflow_dispatch:
+on:
+  workflow_dispatch:
 
 env:
   API_IMAGE: johnliutw/blog-api:${{ github.sha }}

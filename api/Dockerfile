@@ -22,6 +22,8 @@ RUN apt-get update && apt-get upgrade -y && \
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
+RUN pecl install redis && docker-php-ext-enable redis
+
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
 COPY --from=composer:2.7.6 /usr/bin/composer /usr/bin/composer
