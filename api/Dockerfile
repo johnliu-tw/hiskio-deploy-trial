@@ -17,6 +17,7 @@ RUN apt-get update && apt-get upgrade -y && \
     net-tools \
     supervisor \
     redis-server \
+    iputils-ping \
     default-mysql-client
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*

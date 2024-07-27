@@ -1,12 +1,12 @@
 name: Deploy
 
-on:
-  workflow_dispatch:
-    inputs:
-      IMAGE_TAG:
-        description: 'Docker Image Tag'
-        required: true
-        default: 'latest'
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       IMAGE_TAG:
+#         description: 'Docker Image Tag'
+#         required: true
+#         default: 'latest'
 
 jobs:
   deploy:
