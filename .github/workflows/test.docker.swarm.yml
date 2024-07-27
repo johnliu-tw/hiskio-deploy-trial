@@ -1,7 +1,7 @@
 name: Tests
 
-# on:
-#   workflow_dispatch:
+on:
+  workflow_dispatch:
 
 env:
   API_IMAGE: johnliutw/blog-api:${{ github.sha }}
@@ -20,9 +20,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build images
         run: |
-          docker build -t $API_IMAGE --target=api --build-arg user=john --build-arg uid=1000 -f ./api/Dockerfile .
-          docker build -t $SCHEDULER_IMAGE --target=scheduler --build-arg user=john --build-arg uid=1000 -f ./api/Dockerfile .
-          docker build -t $WORKER_IMAGE --target=worker --build-arg user=john --build-arg uid=1000 -f ./api/Dockerfile .
+          docker build -t $API_IMAGE --target=api --build-arg user=john --build-arg uid=1000 -f ./api/swarm.Dockerfile .
+          docker build -t $SCHEDULER_IMAGE --target=scheduler --build-arg user=john --build-arg uid=1000 -f ./api/swarm.Dockerfile .
+          docker build -t $WORKER_IMAGE --target=worker --build-arg user=john --build-arg uid=1000 -f ./api/swarm.Dockerfile .
       - name: Push images
         run: |
           docker push $API_IMAGE

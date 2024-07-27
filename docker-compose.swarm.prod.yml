@@ -3,6 +3,8 @@ services:
   api:
     image: johnliutw/blog-api:${IMAGE_TAG}
     command: sh -c "php-fpm"
+    deploy:
+      replicas: 3
     volumes:
       - ./.env:/usr/src/.env
       - type: volume
@@ -35,6 +37,9 @@ services:
 
   scheduler:
     image: johnliutw/blog-scheduler:${IMAGE_TAG}
+    command: sh -c "php /usr/src/artisan schedule:run --verbose --no-interaction"
+    deploy:
+      replicas: 1
     volumes:
       - ./.env:/usr/src/.env
       - type: volume
@@ -45,6 +50,15 @@ services:
 
   worker:
     image: johnliutw/blog-worker:${IMAGE_TAG}
+    command: sh -c "php /usr/src/artisan queue:work --queue=default,high --tries=3 --verbose --timeout=30 --sleep=3 --max-jobs=1000 --max-time=3600"
+    deploy:
+      replicas: 1
+    healthcheck:
+      test: [ "CMD", "php", "/usr/src/artisan", "queue:monitor", "default" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     volumes:
       - ./.env:/usr/src/.env
       - type: volume
