@@ -35,7 +35,7 @@ jobs:
 
       - name: Prepare secrets
         run: |
-            cp ./api/.env.docker.prod.template .env
+            cp api/.env.docker.prod.template .env
   
             sed -i "/IMAGE_TAG/c\IMAGE_TAG=${{ github.event.inputs.IMAGE_TAG }}" .env
   
@@ -52,10 +52,10 @@ jobs:
             mv tmp_config deployment/infra/common/app-config.yml
       - name: Prepare deployment files
         run: |
+            echo $IMAGE_TAG
             for subdir in "deployment/infra"/*; do
               for file in "$subdir"/*.yml; do
                 envsubst < $file > tmp
-                cat $file
                 mv tmp $file
               done
             done
