@@ -28,7 +28,6 @@ jobs:
           echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
           chmod +x kubectl
           mv ./kubectl /usr/local/bin
-          kubectl version --output=yaml
 
       - name: Update kubeconfig for AWS EKS
         run: |
