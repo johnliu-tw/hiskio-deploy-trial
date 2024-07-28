@@ -3,10 +3,8 @@ kind: ConfigMap
 metadata:
   name: blog
 data:
-  # IMAGE_TAG: "$IMAGE_TAG"
-  # APP_URL: "$APP_URL"
-  IMAGE_TAG: "b9c4a5ec6ca9d95fb5b8d3a40bac3277c2a6baf1"
-  APP_URL: "localhost:80"
+  IMAGE_TAG: "$IMAGE_TAG"
+  APP_URL: "$APP_URL"
   APP_NAME: "blog"
   APP_ENV: "production"
   APP_TIMEZONE: "UTC"

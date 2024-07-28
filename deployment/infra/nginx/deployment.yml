@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: johnliutw/blog-nginx:b9c4a5ec6ca9d95fb5b8d3a40bac3277c2a6baf1
+          image: johnliutw/blog-nginx:$IMAGE_TAG
           imagePullPolicy: Always
           resources:
             requests:

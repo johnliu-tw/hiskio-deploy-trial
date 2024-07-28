@@ -14,7 +14,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: scheduler
-              image: johnliutw/blog-scheduler:b9c4a5ec6ca9d95fb5b8d3a40bac3277c2a6baf1
+              image: johnliutw/blog-scheduler:$IMAGE_TAG
               imagePullPolicy: Always
               envFrom:
                 - configMapRef:
