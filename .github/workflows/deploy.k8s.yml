@@ -1,0 +1,65 @@
+name: Deploy-k8s
+
+on:
+  workflow_dispatch:
+    inputs:
+      IMAGE_TAG:
+        description: 'Docker Image Tag'
+        required: true
+        default: 'latest'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+          echo "$(cat kubectl.sha256)  kubectl" | sha256sum --check
+          chmod +x kubectl
+          mv ./kubectl /usr/local/bin
+          kubectl version --output=yaml
+
+      - name: Update kubeconfig for AWS EKS
+        run: |
+          aws eks update-kubeconfig --name ${{ secrets.AWS_EKS_CLUSTER_NAME }}
+
+      - name: Prepare secrets
+        run: |
+            cp .env.docker.prod.template .env
+  
+            sed -i "/IMAGE_TAG/c\IMAGE_TAG=${{ github.event.inputs.IMAGE_TAG }}" .env
+  
+            sed -i "/DB_HOST/c\DB_HOST=${{ secrets.DB_HOST }}" .env
+  
+            sed -i "/APP_KEY/c\APP_KEY=${{ secrets.APP_KEY }}" .env
+  
+            export $(cat .env)
+  
+            envsubst < deployment/infra/common/app-secret.yml > tmp_secret
+            mv tmp_secret deployment/infra/common/app-secret.yml
+  
+            envsubst < deployment/infra/common/app-config.yml > tmp_config
+            mv tmp_config deployment/infra/common/app-config.yml
+      - name: Prepare deployment files
+        run: |
+            for subdir in "deployment/infra"/*; do
+              for file in "$subdir"/*.yml; do
+                envsubst < $file > tmp
+                mv tmp $file
+              done
+            done
+      - name: Update cluster
+        run: |
+          kubectl delete -f deployment/infra/migrate
+          kubectl apply -R -f deployment/infra
