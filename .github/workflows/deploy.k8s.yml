@@ -50,6 +50,9 @@ jobs:
   
             envsubst < deployment/infra/common/app-config.yml > tmp_config
             mv tmp_config deployment/infra/common/app-config.yml
+
+            echo $IMAGE_TAG
+            cat app-secret.yml
       - name: Prepare deployment files
         run: |
             echo $IMAGE_TAG
