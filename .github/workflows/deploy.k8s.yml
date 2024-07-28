@@ -40,21 +40,20 @@ jobs:
             sed -i "/IMAGE_TAG/c\IMAGE_TAG=${{ github.event.inputs.IMAGE_TAG }}" .env
             sed -i "/DB_HOST/c\DB_HOST=${{ secrets.DB_HOST }}" .env
             sed -i "/APP_KEY/c\APP_KEY=${{ secrets.APP_KEY }}" .env
+            sed -i "/DB_PASSWORD/c\DB_PASSWORD=${{ secrets.DB_PASSWORD }}" .env
   
             export $(cat .env)
 
             echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
             echo "DB_HOST=${DB_HOST}" >> $GITHUB_ENV
             echo "APP_KEY=${APP_KEY}" >> $GITHUB_ENV
+            echo "DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
   
             envsubst < deployment/infra/common/app-secret.yml > tmp_secret
             mv tmp_secret deployment/infra/common/app-secret.yml
   
             envsubst < deployment/infra/common/app-config.yml > tmp_config
             mv tmp_config deployment/infra/common/app-config.yml
-
-            echo $IMAGE_TAG
-            cat deployment/infra/common/app-secret.yml
       - name: Prepare deployment files
         run: |
             echo $IMAGE_TAG
