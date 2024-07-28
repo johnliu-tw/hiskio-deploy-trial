@@ -16,6 +16,10 @@ spec:
         - name: worker
           image: johnliutw/blog-worker:b9c4a5ec6ca9d95fb5b8d3a40bac3277c2a6baf1
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "64Mi"
           envFrom:
             - configMapRef:
                 name: blog

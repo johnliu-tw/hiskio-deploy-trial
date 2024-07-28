@@ -16,5 +16,9 @@ spec:
         - name: nginx
           image: johnliutw/blog-nginx:b9c4a5ec6ca9d95fb5b8d3a40bac3277c2a6baf1
           imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "16Mi"
           ports:
             - containerPort: 80
