@@ -54,8 +54,8 @@ jobs:
         run: |
             for subdir in "deployment/infra"/*; do
               for file in "$subdir"/*.yml; do
-                cat $file
                 envsubst < $file > tmp
+                cat $file
                 mv tmp $file
               done
             done
