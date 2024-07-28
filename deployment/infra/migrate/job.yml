@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: migrate
+          image: johnliutw/blog-api:b9c4a5ec6ca9d95fb5b8d3a40bac3277c2a6baf1
+          command: ["sh", "-c", "php artisan migrate --force"]
+          envFrom:
+            - configMapRef:
+                name: blog
+            - secretRef:
+                name: blog
+
+

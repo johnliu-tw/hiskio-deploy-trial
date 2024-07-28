@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: scheduler
+spec:
+  schedule: "* * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: scheduler
+              image: johnliutw/blog-scheduler:b9c4a5ec6ca9d95fb5b8d3a40bac3277c2a6baf1
+              imagePullPolicy: Always
+              envFrom:
+                - configMapRef:
+                    name: blog
+                - secretRef:
+                    name: blog
