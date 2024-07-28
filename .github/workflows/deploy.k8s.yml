@@ -35,7 +35,7 @@ jobs:
 
       - name: Prepare secrets
         run: |
-            cp .env.docker.prod.template .env
+            cp ./api/.env.docker.prod.template .env
   
             sed -i "/IMAGE_TAG/c\IMAGE_TAG=${{ github.event.inputs.IMAGE_TAG }}" .env
   
