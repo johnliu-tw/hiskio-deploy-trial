@@ -15,33 +15,28 @@ jobs:
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping"
-
+    defaults:
+      run:
+        working-directory: ./api
     steps:
       - uses: shivammathur/setup-php@c541c155eee45413f5b09a52248675b1a2575231
         with:
           php-version: '8.3'
       - uses: actions/checkout@v4
       - name: Copy .env
-        run: |
-          cd api
-          cp .env.ci .env
+        run: cp .env.ci .env
+
       - name: Install Dependencies
-        run: |
-          cd api
-          composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+  
       - name: Generate key
-        run: |
-          cd api
-          php artisan key:generate
+        run: php artisan key:generate
+
       - name: Migration
-        run: |
-          cd api
-          php artisan migrate
+        run: php artisan migrate
+
       - name: Directory Permissions
-        run: |
-          cd api
-          chmod -R 777 storage bootstrap/cache
+        run: chmod -R 777 storage bootstrap/cache
+
       - name: Run tests
-        run: |
-          cd api
-          php artisan test
+        run: php artisan test
